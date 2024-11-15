@@ -10,3 +10,4 @@ Collection of code, projects, and assignments from Computer Science Master's pro
 
 ## Courses:
 - Algorithms and Data Structures (AiZSD)
+- Concurrent Programming (PW)
