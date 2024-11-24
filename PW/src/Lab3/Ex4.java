@@ -24,23 +24,29 @@ class Pot {
     }
 
     public void getServing() throws InterruptedException {
-// Kod rozwiązania...
-        if (servingsAvailable > 0) {
-            emptyPot.release();
-            available.acquire();
-            removeServing();
-        } else {
-            emptyPot.acquire();
-            available.release();
-        }
+        // Wait for available portions
+        available.acquire();
 
+        // Remove one serving and get remaining count
+        int remaining = removeServing();
+
+        // If this was the last portion, wake up the cook
+        if (remaining == 0) {
+            emptyPot.release();  // Signal cook to fill pot
+        }
     }
 
     public void fill() throws InterruptedException {
-// Kod rozwiązania...
+        // Wait for empty pot signal
+        emptyPot.acquire();
+
+        // Fill the pot with M portions
         insertServings(M);
-        available.acquire();
-        emptyPot.release();
+
+        // Release M permits to allow M servings to be taken
+        for (int i = 0; i < M; i++) {
+            available.release();
+        }
 
     }
 }
