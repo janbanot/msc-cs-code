@@ -1,18 +1,29 @@
 \section{Rozwiązanie}
 \subsection{Struktura optymalnego rozwiązania}
-Dzięki tej strukturze możemy efektywnie zastosować programowanie dynamiczne, co pozwala na systematyczne wypełnianie macierzy kosztów i uzyskanie optymalnego rozwiązania.
+Programowanie dynamiczne opiera się na podziale problemu na mniejsze, łatwiejsze do rozwiązania podproblemy oraz wykorzystaniu wyników tych podproblemów do budowy rozwiązania dla całości. W kontekście odległości edycyjnej, kluczową strukturą jest macierz kosztów, która systematycznie przechowuje wyniki obliczeń dla prefiksów obu łańcuchów.
 
-\subsubsection{Podział na podproblemy}
-Odległość edycyjna między dwoma łańcuchami \(s_1\) i \(s_2\) może być rozbita na mniejsze podproblemy, takie jak odległość między prefiksami tych łańcuchów. Każdy podproblem polega na obliczeniu odległości edycyjnej między prefiksami \(s_1[0..i]\) i \(s_2[0..j]\).
+\subsubsection{Główne etapy}
 
-\subsubsection{Optymalność podproblemów}
-Każde optymalne rozwiązanie dla całego problemu składa się z optymalnych rozwiązań jego podproblemów. Oznacza to, że jeśli znamy minimalną liczbę operacji potrzebnych do przekształcenia prefiksów \(s_1[0..i-1]\) i \(s_2[0..j-1]\), możemy wykorzystać tę wiedzę do obliczenia odległości dla \(s_1[0..i]\) i \(s_2[0..j]\).
+\begin{enumerate}
+    \item \textbf{Podział na podproblemy} \\
+    Odległość edycyjna pomiędzy całymi łańcuchami $s_1$ i $s_2$ jest rozbijana na mniejsze problemy, takie jak odległość między prefiksami tych łańcuchów. Prefiks oznacza dowolny początkowy fragment łańcucha, np. dla $s_1 = \text{``kot''}$, prefiksami są: $\text{``''}$, $\text{``k''}$, $\text{``ko''}$, $\text{``kot''}$.
+    
+    \item \textbf{Zasada optymalności} \\
+    Minimalny koszt przekształcenia prefiksu $s_1[0..i]$ w $s_2[0..j]$ zależy wyłącznie od kosztów trzech możliwych operacji: zamiany, usunięcia lub wstawienia, zastosowanych do krótszych prefiksów. To pozwala budować rozwiązanie krok po kroku, bazując na wynikach mniejszych podproblemów.
 
-\subsubsection{Zależność od trzech operacji}
-Optymalne rozwiązanie jest budowane poprzez wybór jednej z trzech operacji: zamiany, usunięcia lub wstawienia, która minimalizuje całkowity koszt. Algorytm dynamiczny wybiera operację, która prowadzi do najmniejszej liczby operacji edycyjnych.
+    \item \textbf{Macierz kosztów} \\
+    Tworzona jest dwuwymiarowa macierz $D$, gdzie $D[i][j]$ oznacza minimalny koszt przekształcenia prefiksu $s_1[0..i]$ w $s_2[0..j]$. Algorytm uzupełnia tę macierz od warunków brzegowych do wartości końcowej, tj. $D[m][n]$, gdzie $m = |s_1|$, $n = |s_2|$.
+\end{enumerate}
 
-\subsubsection{Przykład}
-Rozważmy dwa łańcuchy “kitten” i “sitting”. Optymalne rozwiązanie wymaga minimalnej liczby operacji, które można rozbić na mniejsze kroki, np. “kitten” -> “sitten” -> “sittin” -> “sitting”. Każdy krok opiera się na rozwiązaniu podproblemów dla krótszych prefiksów.
+\subsubsection{Przykład struktury}
+
+Dla łańcuchów $s_1 = \text{``kot''}$ i $s_2 = \text{``młot''}$, proces budowy macierzy kosztów wygląda następująco:
+\begin{itemize}
+    \item Macierz $D$ inicjalizuje koszty przekształceń pustych prefiksów ($D[0][j]$, $D[i][0]$).
+    \item Kolejne wartości w $D[i][j]$ są obliczane zgodnie z formułą rekurencyjną, wybierając minimalny koszt spośród dostępnych operacji.
+\end{itemize}
+
+W ten sposób struktura programu dynamicznego gwarantuje, że wszystkie podproblemy są rozwiązane efektywnie, unikając wielokrotnego obliczania tych samych wartości.
 
 \subsection{Rekurencyjna funkcja kosztu}
 \subsubsection{Definicja funkcji}
@@ -41,21 +52,32 @@ Gdzie \(\chi(s_1[i] \neq s_2[j])\) zwraca 0, jeśli znaki są takie same, lub 1,
 Funkcja korzysta z wartości już obliczonych dla mniejszych podproblemów, co pozwala na efektywne obliczenie kosztu dla całych łańcuchów. Każda wartość w macierzy jest obliczana na podstawie wcześniej obliczonych wartości, co czyni algorytm efektywnym i pozwala na obliczenie minimalnej liczby operacji edycyjnych.
 
 \subsection{Macierz kosztów}
-\subsubsection{Inicjalizacja macierzy}
-\begin{enumerate}
-    \item Utwórz dwuwymiarową macierz \(D\) o rozmiarze \((m+1) \times (n+1)\), gdzie \(m = |s_1|\) i \(n = |s_2|\).
-    \item Zainicjuj pierwszą kolumnę: \(D[i][0] = i\) dla \(0 \leq i \leq m\).
-    \item Zainicjuj pierwszy wiersz: \(D[0][j] = j\) dla \(0 \leq j \leq n\).
-\end{enumerate}
+Algorytm stosuje podejście rekurencyjne z memoizacją, co pozwala na dynamiczne obliczanie wartości tylko dla tych komórek, które są rzeczywiście potrzebne w trakcie działania programu. Wyniki są przechowywane w strukturze pamięci podręcznej (\textit{memo}), co zapobiega wielokrotnemu rozwiązywaniu tych samych podproblemów.
 
-\subsubsection{Wypełnianie macierzy}
-\begin{enumerate}
-    \item Iteruj przez wszystkie komórki macierzy, zaczynając od \(i = 1\) i \(j = 1\).
-    \item Dla każdej komórki (D[i][j]), oblicz wartość używając rekurencyjnej funkcji kosztu zdefiniowanej w punkcie \ref{eq:rekurencyjne-wyrazenie}.
-\end{enumerate}
+\begin{itemize}
+    \item \textbf{Reprezentacja macierzy kosztów:} 
+    Zamiast jawnej macierzy dwuwymiarowej $D[i][j]$, algorytm przechowuje wyniki w słowniku (\textit{memo}), gdzie kluczami są pary indeksów $(i, j)$, odpowiadające pozycjom w macierzy. Dla każdej pary $(i, j)$ wartość \textit{memo}$[(i, j)]$ oznacza minimalny koszt przekształcenia prefiksu $s_1[0..i]$ w $s_2[0..j]$.
 
-\subsubsection{Odczytanie wyniku}
-Końcowa wartość \(D[m][n]\) zawiera minimalny koszt przekształcenia \(s_1\) w \(s_2\).
+    \item \textbf{Warunki brzegowe:} 
+    Jeśli jeden z prefiksów jest pusty ($i = 0$ lub $j = 0$), koszt przekształcenia jest równy długości drugiego prefiksu:
+    \[
+    \textit{memo}[(i, 0)] = i, \quad \textit{memo}[(0, j)] = j.
+    \]
+
+    \item \textbf{Rekurencyjne wyrażenie:} 
+    Koszt dla dowolnego $(i, j)$ jest obliczany rekurencyjnie na podstawie trzech możliwych operacji:
+    \[
+    \textit{memo}[(i, j)] = \min \begin{cases} 
+    \textit{memo}[(i-1, j)] + 1 & \text{(usunięcie)} \\
+    \textit{memo}[(i, j-1)] + 1 & \text{(wstawienie)} \\
+    \textit{memo}[(i-1, j-1)] + \chi(s_1[i] \neq s_2[j]) & \text{(zamiana)} 
+    \end{cases}
+    \]
+    gdzie $\chi(s_1[i] \neq s_2[j]) = 1$, jeśli znaki są różne, i $0$, jeśli są takie same.
+
+    \item \textbf{Dynamiczne wypełnianie:} 
+    Algorytm odwiedza komórki macierzy w kolejności zależnej od aktualnych potrzeb, rozpoczynając od $(m, n)$ (całych łańcuchów) i przechodząc rekurencyjnie do mniejszych podproblemów. Gdy wartość dla $(i, j)$ jest już obliczona, nie jest przeliczana ponownie, tylko odczytywana z \textit{memo}.
+\end{itemize}
 
 \subsubsection{Przykład ilustracyjny}
 Rozważmy dwa łańcuchy “kot” i “młot”. Wypełniając macierz, możemy zobaczyć, jak wartości są obliczane krok po kroku. Każda komórka macierzy reprezentuje minimalny koszt przekształcenia odpowiednich prefiksów.
@@ -77,8 +99,11 @@ Oto tabela ilustrująca przykład dla wyrazów "kot" i "młot":
     \caption{Tabela przedstawiająca minimalny koszt przekształcenia wyrazu "kot" w "młot".}
     \label{tab:kot-mlot}
 \end{table}
+
 \begin{itemize}
     \item Inicjalizacja - pierwszy wiersz i kolumna reprezentują przekształcenia pustego łańcucha w prefiksy drugiego łańcucha i odwrotnie.
     \item Obliczenia - każda komórka \(D[i][j]\) jest obliczana na podstawie sąsiednich komórek, zgodnie z rekurencyjną funkcją kosztu.
     \item Wynik końcowy - komórka \(D[3][4]\) (wartość 2) oznacza minimalny koszt przekształcenia "kot" w "młot".
 \end{itemize}
+
+\textit{Powyższa tabela ilustruje pełne wypełnienie macierzy kosztów. W podejściu z memoizacją obliczane są tylko te komórki, które są rzeczywiście potrzebne, a wyniki przechowywane w strukturze \textit{memo}.}
