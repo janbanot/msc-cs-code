@@ -1,0 +1,84 @@
+\section{Rozwiązanie}
+\subsection{Struktura optymalnego rozwiązania}
+Dzięki tej strukturze możemy efektywnie zastosować programowanie dynamiczne, co pozwala na systematyczne wypełnianie macierzy kosztów i uzyskanie optymalnego rozwiązania.
+
+\subsubsection{Podział na podproblemy}
+Odległość edycyjna między dwoma łańcuchami \(s_1\) i \(s_2\) może być rozbita na mniejsze podproblemy, takie jak odległość między prefiksami tych łańcuchów. Każdy podproblem polega na obliczeniu odległości edycyjnej między prefiksami \(s_1[0..i]\) i \(s_2[0..j]\).
+
+\subsubsection{Optymalność podproblemów}
+Każde optymalne rozwiązanie dla całego problemu składa się z optymalnych rozwiązań jego podproblemów. Oznacza to, że jeśli znamy minimalną liczbę operacji potrzebnych do przekształcenia prefiksów \(s_1[0..i-1]\) i \(s_2[0..j-1]\), możemy wykorzystać tę wiedzę do obliczenia odległości dla \(s_1[0..i]\) i \(s_2[0..j]\).
+
+\subsubsection{Zależność od trzech operacji}
+Optymalne rozwiązanie jest budowane poprzez wybór jednej z trzech operacji: zamiany, usunięcia lub wstawienia, która minimalizuje całkowity koszt. Algorytm dynamiczny wybiera operację, która prowadzi do najmniejszej liczby operacji edycyjnych.
+
+\subsubsection{Przykład}
+Rozważmy dwa łańcuchy “kitten” i “sitting”. Optymalne rozwiązanie wymaga minimalnej liczby operacji, które można rozbić na mniejsze kroki, np. “kitten” -> “sitten” -> “sittin” -> “sitting”. Każdy krok opiera się na rozwiązaniu podproblemów dla krótszych prefiksów.
+
+\subsection{Rekurencyjna funkcja kosztu}
+\subsubsection{Definicja funkcji}
+Niech \(d(i, j)\) oznacza minimalny koszt przekształcenia prefiksu \(s_1[0..i]\) w \(s_2[0..j]\).
+
+\subsubsection{Warunki brzegowe}
+\begin{itemize}
+    \item \(d(0, 0) = 0\): Przekształcenie pustego łańcucha w pusty nie wymaga operacji.
+    \item \(d(i, 0) = i\): Przekształcenie prefiksu \(s_1\) w pusty łańcuch wymaga \(i\) usunięć.
+    \item \(d(0, j) = j\): Przekształcenie pustego łańcucha w prefiks \(s_2\) wymaga \(j\) wstawień.
+\end{itemize}
+
+\subsubsection{Rekurencyjne wyrażenie}
+Dla \(i > 0\) i \(j > 0\):
+\[
+d(i, j) = \min \begin{cases} 
+d(i-1, j) + 1, & \text{(usunięcie)} \\
+d(i, j-1) + 1, & \text{(wstawienie)} \\
+d(i-1, j-1) + \chi(s_1[i] \neq s_2[j]), & \text{(zamiana)}
+\end{cases}
+\] 
+\label{eq:rekurencyjne-wyrazenie}
+Gdzie \(\chi(s_1[i] \neq s_2[j])\) zwraca 0, jeśli znaki są takie same, lub 1, jeśli różne.
+
+\subsubsection{Uzasadnienie}
+Funkcja korzysta z wartości już obliczonych dla mniejszych podproblemów, co pozwala na efektywne obliczenie kosztu dla całych łańcuchów. Każda wartość w macierzy jest obliczana na podstawie wcześniej obliczonych wartości, co czyni algorytm efektywnym i pozwala na obliczenie minimalnej liczby operacji edycyjnych.
+
+\subsection{Macierz kosztów}
+\subsubsection{Inicjalizacja macierzy}
+\begin{enumerate}
+    \item Utwórz dwuwymiarową macierz \(D\) o rozmiarze \((m+1) \times (n+1)\), gdzie \(m = |s_1|\) i \(n = |s_2|\).
+    \item Zainicjuj pierwszą kolumnę: \(D[i][0] = i\) dla \(0 \leq i \leq m\).
+    \item Zainicjuj pierwszy wiersz: \(D[0][j] = j\) dla \(0 \leq j \leq n\).
+\end{enumerate}
+
+\subsubsection{Wypełnianie macierzy}
+\begin{enumerate}
+    \item Iteruj przez wszystkie komórki macierzy, zaczynając od \(i = 1\) i \(j = 1\).
+    \item Dla każdej komórki (D[i][j]), oblicz wartość używając rekurencyjnej funkcji kosztu zdefiniowanej w punkcie \ref{eq:rekurencyjne-wyrazenie}.
+\end{enumerate}
+
+\subsubsection{Odczytanie wyniku}
+Końcowa wartość \(D[m][n]\) zawiera minimalny koszt przekształcenia \(s_1\) w \(s_2\).
+
+\subsubsection{Przykład ilustracyjny}
+Rozważmy dwa łańcuchy “kot” i “młot”. Wypełniając macierz, możemy zobaczyć, jak wartości są obliczane krok po kroku. Każda komórka macierzy reprezentuje minimalny koszt przekształcenia odpowiednich prefiksów.
+
+Oto tabela ilustrująca przykład dla wyrazów "kot" i "młot":
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c}
+       &   & \text{m} & \text{\l} & \text{o} & \text{t} \\
+    \hline
+       & 0 & 1 & 2 & 3 & 4 \\
+    \hline
+    \text{k} & 1 & 1 & 2 & 3 & 4 \\
+    \hline
+    \text{o} & 2 & 2 & 2 & 2 & 3 \\
+    \hline
+    \text{t} & 3 & 3 & 3 & 3 & 2 \\
+    \end{tabular}
+    \caption{Tabela przedstawiająca minimalny koszt przekształcenia wyrazu "kot" w "młot".}
+    \label{tab:kot-mlot}
+\end{table}
+\begin{itemize}
+    \item Inicjalizacja - pierwszy wiersz i kolumna reprezentują przekształcenia pustego łańcucha w prefiksy drugiego łańcucha i odwrotnie.
+    \item Obliczenia - każda komórka \(D[i][j]\) jest obliczana na podstawie sąsiednich komórek, zgodnie z rekurencyjną funkcją kosztu.
+    \item Wynik końcowy - komórka \(D[3][4]\) (wartość 2) oznacza minimalny koszt przekształcenia "kot" w "młot".
+\end{itemize}

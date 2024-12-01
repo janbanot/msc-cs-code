@@ -1,0 +1,40 @@
+\section{Teoria}
+\subsection{Opis Problemu}
+Odległość edycyjna, znana także jako odległość Levenshteina, to popularna metoda do analizy i korekty tekstu, opracowana przez Vladimira Levenshteina w 1965 roku\cite{levenshtein1966}. Jest to uogólnienie odległości Hamminga, które mierzy odmienność między dwoma skończonymi ciągami znaków.
+
+\vspace{1em}
+
+Odległość ta jest zdefiniowana jako minimalna liczba prostych operacji potrzebnych do przekształcenia jednego ciągu w drugi. Dozwolone operacje to:
+
+\begin{itemize}
+    \item Zamiana znaku - zmiana jednego znaku na inny.
+    \item Usunięcie znaku - usunięcie jednego znaku z ciągu.
+    \item Dodanie znaku - wstawienie nowego znaku do ciągu.
+\end{itemize}
+
+\vspace{1em}
+
+Każda z tych operacji ma taką samą wagę. Odległość Levenshteina jest miarą metryczną, co oznacza, że spełnia warunki metryki w przestrzeni ciągów znaków. Znajduje zastosowanie w różnych dziedzinach, takich jak rozpoznawanie mowy, analiza DNA, systemy antyplagiatowe i korekta pisowni.
+
+\subsection{Rekurencyjna definicja}
+Odległość Levenshteina można sformułować rekurencyjnie, co pozwala na efektywne obliczanie tej miary za pomocą programowania dynamicznego. Rekurencyjna definicja odległości edycyjnej \(d(x_1, x_2)\) między łańcuchami \(x_1\) i \(x_2\) jest następująca:
+
+\vspace{1em}
+
+Warunki brzegowe:
+\begin{itemize}
+    \item \(d(\epsilon, \epsilon) = 0\): Przekształcenie pustego łańcucha w pusty nie wymaga operacji.
+    \item \(d(s, \epsilon) = |s|\): Przekształcenie łańcucha \(s\) w pusty wymaga usunięcia wszystkich znaków.
+    \item \(d(\epsilon, s) = |s|\): Przekształcenie pustego łańcucha w \(s\) wymaga wstawienia wszystkich znaków.
+\end{itemize}
+
+Definicja rekurencyjna:
+\[
+    d(s_1z_1, s_2z_2) = \min 
+    \begin{cases} 
+        d(s_1, s_2) + \chi(z_1 \neq z_2), & \text{(zamiana)} \\ 
+        d(s_1z_1, s_2) + 1, & \text{(usunięcie)} \\ 
+        d(s_1, s_2z_2) + 1, & \text{(wstawienie)} 
+    \end{cases}
+\]
+, gdzie \(\chi(z_1 \neq z_2)\) wynosi 0, jeśli znaki są takie same, i 1, jeśli są różne.

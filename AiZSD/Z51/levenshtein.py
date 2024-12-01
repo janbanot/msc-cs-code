@@ -53,8 +53,6 @@ def edit_distance_recursive(s1, s2):
     """
 
     # Base cases
-    if len(s1) == 0 and len(s2) == 0:  # d(ε,ε) = 0
-        return 0
     if len(s1) == 0:  # d(ε,s) = |s|
         return len(s2)
     if len(s2) == 0:  # d(s,ε) = |s|
@@ -81,9 +79,6 @@ def edit_distance_recursive(s1, s2):
 
 
 def edit_distance_memoized(s1, s2, memo=None):
-    """
-    Memoized version of recursive edit distance calculation
-    """
     if memo is None:
         memo = {}
 
@@ -124,12 +119,12 @@ def edit_distance_memoized(s1, s2, memo=None):
 
 
 if __name__ == "__main__":
-    word_a = "pies"
-    word_b = "kot"
+    word_a = "kot"
+    word_b = "młot"
 
     array = edit_distance_dynamic(word_a, word_b)
-    # for row in array:
-    #     print(row)
+    for row in array:
+        print(row)
 
     distance_recursive = edit_distance_recursive(word_a, word_b)
     distance_memoized = edit_distance_memoized(word_a, word_b)

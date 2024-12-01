@@ -1,0 +1,83 @@
+\section{Odpowiedź}
+\subsection{Algorytm w pseudokodzie}
+Poniższy fragment pseudokodu ilustruje, jak algorytm wypełnia macierz kosztów, korzystając z podejścia zstępującego z memoizacją, co pozwala na efektywne obliczanie odległości edycyjnej.
+
+\begin{verbatim}
+Funkcja OdległośćEdycyjna(s1, s2):
+    Jeśli memo nie istnieje:
+        // Struktura do przechowywania wyników podproblemów
+        Utwórz pusty memo
+    // Klucz identyfikuje unikalny podproblem
+    Klucz = (długość(s1), długość(s2))
+    Jeśli Klucz jest w memo:
+        Zwróć memo[Klucz]
+    Jeśli długość(s1) == 0 i długość(s2) == 0:
+        // Brak operacji dla pustych łańcuchów
+        Zwróć 0
+    Jeśli długość(s1) == 0:
+        // Wstawienie wszystkich znaków z s2
+        Zwróć długość(s2)
+    Jeśli długość(s2) == 0:
+        // Usunięcie wszystkich znaków z s1
+        Zwróć długość(s1)
+    s1_prefix = s1 bez ostatniego znaku
+    s2_prefix = s2 bez ostatniego znaku
+    z1 = ostatni znak s1
+    z2 = ostatni znak s2
+    koszt_zamiany = 0 jeśli z1 == z2, w przeciwnym razie 1
+    Wynik = min(
+        // Zamiana
+        OdległośćEdycyjna(s1_prefix, s2_prefix) + koszt_zamiany,
+        // Wstawienie
+        OdległośćEdycyjna(s1, s2_prefix) + 1,
+        // Usunięcie
+        OdległośćEdycyjna(s1_prefix, s2) + 1
+    )
+    memo[Klucz] = Wynik
+    
+    Zwróć Wynik  
+\end{verbatim}
+
+\subsection{Analiza złożoności}
+\begin{itemize}
+    \item Złożoność obliczeniowa - dzięki memoizacji, złożoność czasowa wynosi \(O(m \times n)\), gdzie \(m\) i \(n\) to długości porównywanych łańcuchów. Każdy podproblem jest rozwiązywany tylko raz.
+    \item Złożoność pamięciowa - pamięć potrzebna do wykonania procesu memoizacji to również \(O(m \times n)\), ponieważ przechowujemy pośrednie wyniki dla wszystkich możliwych podproblemów.
+\end{itemize}
+
+\subsection{Implementacja rozwiązania w języku Python}
+Poniżej znajduje się implementacja algorytmu obliczającego odległość edycyjną z wykorzystaniem memoizacji. Podejście to pozwala na efektywne obliczanie minimalnej liczby operacji potrzebnych do przekształcenia jednego łańcucha w drugi, unikając wielokrotnego rozwiązywania tych samych podproblemów.
+
+\begin{verbatim}
+def edit_distance(s1, s2, memo=None):
+    if memo is None:
+        memo = {}
+    
+    key = (len(s1), len(s2))
+    # If result already calculated, return it
+    if key in memo:
+        return memo[key]
+        
+    # Base cases
+    if len(s1) == 0:
+        return len(s2)
+    if len(s2) == 0:
+        return len(s1)
+        
+    # Get prefixes and last characters
+    s1_prefix = s1[:-1]
+    s2_prefix = s2[:-1]
+    z1 = s1[-1]
+    z2 = s2[-1]
+
+    # Calculate replacement cos
+    rep_cost = 0 if z1 == z2 else 1
+    
+    result = min(
+        edit_distance(s1_prefix, s2_prefix, memo) + repl_cost,
+        edit_distance(s1, s2_prefix, memo) + 1,
+        edit_distance(s1_prefix, s2, memo) + 1,
+    )
+    
+    memo[key] = result
+    return result
+\end{verbatim}
