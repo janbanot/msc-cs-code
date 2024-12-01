@@ -14,7 +14,7 @@ Odległość ta jest zdefiniowana jako minimalna liczba prostych operacji potrze
 
 \vspace{1em}
 
-Każda z tych operacji ma taką samą wagę. Odległość Levenshteina jest miarą metryczną, co oznacza, że spełnia warunki metryki w przestrzeni ciągów znaków. Znajduje zastosowanie w różnych dziedzinach, takich jak rozpoznawanie mowy, analiza DNA, systemy antyplagiatowe i korekta pisowni.
+Każda z tych operacji ma taką samą wagę. Odległość Levenshteina jest miarą metryczną, co oznacza, że spełnia warunki metryki w przestrzeni ciągów znaków. 
 
 \subsection{Rekurencyjna definicja}
 Odległość Levenshteina można sformułować rekurencyjnie. Rekurencyjna definicja odległości edycyjnej \(d(x_1, x_2)\) między łańcuchami \(x_1\) i \(x_2\) jest następująca:
@@ -38,3 +38,36 @@ Definicja rekurencyjna:
     \end{cases}
 \]
 , gdzie \(\chi(z_1 \neq z_2)\) wynosi 0, jeśli znaki są takie same, i 1, jeśli są różne.
+
+\subsection{Praktyczne zastosowania odległości edycyjnej}
+Odległość Levenshteina znajduje szerokie zastosowanie w wielu dziedzinach informatyki i nie tylko. Poniżej przedstawiono kluczowe obszary jej wykorzystania:
+
+\subsubsection*{Przetwarzanie języka naturalnego}
+\begin{itemize}
+    \item \textbf{Korekta pisowni:} Systemy sprawdzania pisowni używają odległości Levenshteina do sugerowania poprawek, określając najbliższe prawidłowe słowa.
+    \item \textbf{Wyszukiwanie rozmyte:} Silniki wyszukiwania wykorzystują algorytm do znajdowania podobnych haseł, nawet przy małych błędach pisowni.
+\end{itemize}
+
+\subsubsection*{Bioinformatyka}
+\begin{itemize}
+    \item \textbf{Analiza sekwencji DNA:} Porównywanie sekwencji genetycznych, identyfikacja mutacji i podobieństw między łańcuchami genetycznymi.
+    \item \textbf{Klasyfikacja białek:} Określanie stopnia podobieństwa strukturalnego między różnymi białkami.
+\end{itemize}
+
+\subsubsection*{Systemy bezpieczeństwa i weryfikacji}
+\begin{itemize}
+    \item \textbf{Weryfikacja tożsamości:} Porównywanie ciągów znaków w systemach identyfikacji, np. przy weryfikacji danych osobowych.
+    \item \textbf{Systemy antyplagiatowe:} Wykrywanie podobieństwa między tekstami, identyfikacja zapożyczeń.
+\end{itemize}
+
+\subsubsection*{Technologie informacyjne}
+\begin{itemize}
+    \item \textbf{Systemy rekomendacyjne:} Dopasowywanie użytkowników lub treści poprzez pomiar podobieństwa.
+    \item \textbf{Analiza błędów w kodzie:} Identyfikacja podobnych komunikatów o błędach lub fragmentów kodu.
+\end{itemize}
+
+\subsubsection*{Telekomunikacja i przetwarzanie sygnałów}
+\begin{itemize}
+    \item \textbf{Korekcja błędów transmisji:} Wykrywanie i naprawianie zniekształceń w przesyłanych danych.
+    \item \textbf{Rozpoznawanie mowy:} Dopasowywanie wypowiedzianych słów do wzorców słownikowych.
+\end{itemize}
