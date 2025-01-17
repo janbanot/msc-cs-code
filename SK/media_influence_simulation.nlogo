@@ -23,11 +23,6 @@ globals [
   economic-factor
   current-event
   event-impact
-  number-of-agents
-  number-of-media
-  neighbor-connections
-  rewiring-probability
-  fatigue-rate
 
   ;; Statistics globals
   left-percentage
@@ -42,11 +37,8 @@ globals [
 
 to setup
   clear-all
-  set number-of-agents 50     ;; reduced from 100
-  set number-of-media 6       ;; reduced from 10
-  set neighbor-connections 4
-  set rewiring-probability 0.1
-  set fatigue-rate 0.01
+  ;; Values will be taken from sliders
+  reset-ticks
   setup-agents
   setup-media
   setup-network
@@ -232,13 +224,13 @@ to update-statistics
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-261
+374
 10
-760
-510
+959
+596
 -1
 -1
-14.9
+17.5
 1
 10
 1
@@ -293,10 +285,10 @@ NIL
 1
 
 MONITOR
-8
-66
-63
-111
+10
+183
+65
+228
 Left %
 left-percentage
 0
@@ -304,10 +296,10 @@ left-percentage
 11
 
 MONITOR
-175
-64
-232
-109
+177
+181
+234
+226
 Right %
 right-percentage
 0
@@ -315,10 +307,10 @@ right-percentage
 11
 
 MONITOR
-78
-66
-163
-111
+80
+183
+165
+228
 Undecided %
 undecided-percentage
 0
@@ -326,10 +318,10 @@ undecided-percentage
 11
 
 MONITOR
-7
-123
-124
-168
+9
+242
+126
+287
 Polarization Index
 polarization-index
 3
@@ -337,10 +329,10 @@ polarization-index
 11
 
 MONITOR
-6
-179
-161
-224
+8
+298
+163
+343
 Total Opinion Changes
 total-opinion-changes
 0
@@ -348,10 +340,10 @@ total-opinion-changes
 11
 
 MONITOR
-6
-234
-154
-279
+8
+353
+156
+398
 Avg Opinion Changes
 avg-opinion-changes
 3
@@ -359,10 +351,10 @@ avg-opinion-changes
 11
 
 MONITOR
-5
-285
-197
-330
+7
+404
+199
+449
 Most Influential Media Impact
 most-influential-media
 0
@@ -370,10 +362,10 @@ most-influential-media
 11
 
 MONITOR
-5
-337
-176
-382
+7
+456
+178
+501
 Propaganda Effectiveness
 propaganda-effectiveness
 3
@@ -381,10 +373,10 @@ propaganda-effectiveness
 11
 
 MONITOR
-5
-393
-186
-438
+7
+512
+188
+557
 Neutral Media Effectiveness
 neutral-effectiveness
 3
@@ -392,10 +384,10 @@ neutral-effectiveness
 11
 
 PLOT
-787
-14
-1138
-181
+968
+11
+1319
+178
 Political Distribution
 Time
 Percentage
@@ -412,10 +404,10 @@ PENS
 "Undecided" 1.0 0 -7500403 true "" "plot undecided-percentage"
 
 PLOT
-788
-194
-1139
-367
+969
+191
+1320
+364
 Opinion Changes
 Time
 Changes
@@ -429,6 +421,81 @@ false
 PENS
 "Total Changes" 1.0 0 -16777216 true "" "plot total-opinion-changes"
 "Average Changes" 1.0 0 -10899396 true "" "plot avg-opinion-changes"
+
+SLIDER
+10
+59
+182
+92
+number-of-agents
+number-of-agents
+10
+200
+20.0
+5
+1
+NIL
+HORIZONTAL
+
+SLIDER
+7
+103
+179
+136
+number-of-media
+number-of-media
+2
+20
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+5
+144
+198
+177
+neighbor-connections
+neighbor-connections
+2
+10
+4.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+190
+60
+368
+93
+rewiring-probability
+rewiring-probability
+0
+1
+0.5
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+192
+104
+364
+137
+fatigue-rate
+fatigue-rate
+0
+0.1
+0.01
+0.01
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
