@@ -50,7 +50,7 @@ to setup-agents
   create-users number-of-agents [
     set shape "person"
     set political-view one-of ["left" "right" "undecided"]
-    set susceptibility random-float 1
+    set susceptibility 0.2 + random-float 0.8  ; ensure minimum 0.2 susceptibility
     set fatigue 0
     set initial-view political-view
     set opinion-changes 0
@@ -143,6 +143,7 @@ to process-media-influence
 
       if political-view != old-view [
         set opinion-changes opinion-changes + 1
+        show (word "Agent " who " changed from " old-view " to " political-view)
       ]
 
       update-color
@@ -163,10 +164,10 @@ to process-neighbor-influence
         let left-ratio left-count / total-count
         let right-ratio right-count / total-count
 
-        if left-ratio > 0.6 and political-view != "left" and random-float 1 < susceptibility [
+        if left-ratio > neighbor-influence-threshold and political-view != "left" and random-float 1 < susceptibility [
           set political-view "left"
         ]
-        if right-ratio > 0.6 and political-view != "right" and random-float 1 < susceptibility [
+        if right-ratio > neighbor-influence-threshold and political-view != "right" and random-float 1 < susceptibility [
           set political-view "right"
         ]
 
@@ -224,9 +225,9 @@ to update-statistics
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-374
+386
 10
-959
+971
 596
 -1
 -1
@@ -285,10 +286,10 @@ NIL
 1
 
 MONITOR
-10
-183
-65
-228
+8
+198
+63
+243
 Left %
 left-percentage
 0
@@ -296,10 +297,10 @@ left-percentage
 11
 
 MONITOR
-177
-181
-234
-226
+175
+196
+232
+241
 Right %
 right-percentage
 0
@@ -307,10 +308,10 @@ right-percentage
 11
 
 MONITOR
-80
-183
-165
-228
+78
+198
+163
+243
 Undecided %
 undecided-percentage
 0
@@ -318,10 +319,10 @@ undecided-percentage
 11
 
 MONITOR
-9
-242
-126
-287
+7
+257
+233
+302
 Polarization Index
 polarization-index
 3
@@ -329,10 +330,10 @@ polarization-index
 11
 
 MONITOR
-8
-298
-163
-343
+6
+313
+234
+358
 Total Opinion Changes
 total-opinion-changes
 0
@@ -340,10 +341,10 @@ total-opinion-changes
 11
 
 MONITOR
-8
-353
-156
-398
+6
+366
+233
+411
 Avg Opinion Changes
 avg-opinion-changes
 3
@@ -351,10 +352,10 @@ avg-opinion-changes
 11
 
 MONITOR
-7
-404
-199
-449
+5
+419
+233
+464
 Most Influential Media Impact
 most-influential-media
 0
@@ -362,10 +363,10 @@ most-influential-media
 11
 
 MONITOR
-7
-456
-178
-501
+5
+471
+233
+516
 Propaganda Effectiveness
 propaganda-effectiveness
 3
@@ -373,10 +374,10 @@ propaganda-effectiveness
 11
 
 MONITOR
-7
-512
-188
-557
+5
+525
+233
+570
 Neutral Media Effectiveness
 neutral-effectiveness
 3
@@ -384,9 +385,9 @@ neutral-effectiveness
 11
 
 PLOT
-968
+981
 11
-1319
+1332
 178
 Political Distribution
 Time
@@ -404,9 +405,9 @@ PENS
 "Undecided" 1.0 0 -7500403 true "" "plot undecided-percentage"
 
 PLOT
-969
+982
 191
-1320
+1333
 364
 Opinion Changes
 Time
@@ -425,7 +426,7 @@ PENS
 SLIDER
 10
 59
-182
+180
 92
 number-of-agents
 number-of-agents
@@ -455,44 +456,59 @@ HORIZONTAL
 SLIDER
 5
 144
-198
+180
 177
 neighbor-connections
 neighbor-connections
 2
 10
-4.0
+8.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-190
-60
-368
-93
+199
+58
+377
+91
 rewiring-probability
 rewiring-probability
 0
 1
+0.8
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+197
+103
+378
+136
+fatigue-rate
+fatigue-rate
+0
+0.1
+0.005
+0.001
+1
+NIL
+HORIZONTAL
+
+SLIDER
+197
+147
+377
+180
+neighbor-influence-threshold
+neighbor-influence-threshold
 0.5
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-192
-104
-364
-137
-fatigue-rate
-fatigue-rate
-0
-0.1
-0.01
-0.01
+0.9
+0.55
+0.05
 1
 NIL
 HORIZONTAL
