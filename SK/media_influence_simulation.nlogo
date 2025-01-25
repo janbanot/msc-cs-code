@@ -480,9 +480,9 @@ SLIDER
 number-of-agents
 number-of-agents
 10
-200
+500
 20.0
-5
+10
 1
 NIL
 HORIZONTAL
