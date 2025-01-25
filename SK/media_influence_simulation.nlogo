@@ -24,6 +24,8 @@ globals [
   current-event
   event-impact
 
+  output-file
+
   ;; Statistics globals
   left-percentage
   right-percentage
@@ -37,6 +39,11 @@ globals [
 
 to setup
   clear-all
+
+  set output-file "/Users/janbanot/Dev/studia/msc-cs-code/SK/simulations/test1-1.csv"
+  file-open output-file
+  file-print "tick,left,undecided,right,polarization-index,total-opinion-changes,propaganda-effectivness,neutral-effectivness"
+
   ;; Values will be taken from sliders
   reset-ticks
   setup-agents
@@ -59,19 +66,41 @@ to setup-agents
 end
 
 to setup-media
-  create-medias number-of-media [
+  let half-number-of-media number-of-media / 2
+
+  ;; Create left propaganda media
+  create-medias half-number-of-media [
     set shape "square"
-    set media-type one-of ["propaganda-left" "propaganda-right" "neutral"]
+    set media-type "propaganda-left"
     set reach random-float 1
     set effectiveness random-float 1
     set influence-count 0
     setxy random-xcor random-ycor
-
-    ;; Set color based on media type
-    if media-type = "propaganda-left" [ set color orange ]
-    if media-type = "propaganda-right" [ set color violet ]
-    if media-type = "neutral" [ set color white ]
+    set color orange
   ]
+
+  ;; Create right propaganda media
+  create-medias half-number-of-media [
+    set shape "square"
+    set media-type "propaganda-right"
+    set reach random-float 1
+    set effectiveness random-float 1
+    set influence-count 0
+    setxy random-xcor random-ycor
+    set color violet
+  ]
+
+  ;; Create meutral
+;;  create-medias number-of-media [
+;;    set shape "square"
+;;    set media-type "neutral"
+;;    set reach random-float 1
+;;    set effectiveness random-float 1
+;;    set influence-count 0
+;;    setxy random-xcor random-ycor
+;;    set color pink
+;;  ]
+
 end
 
 to setup-network
@@ -102,7 +131,14 @@ to go
   process-neighbor-influence
   update-fatigue
   update-statistics
+
+  if ticks mod 10 = 0 [ save-data ]  ; Save data every 10 ticks
+
   tick
+end
+
+to save-data
+  file-print (word ticks "," left-percentage "," right-percentage "," undecided-percentage "," polarization-index "," total-opinion-changes "," propaganda-effectiveness "," neutral-effectiveness)
 end
 
 to update-external-factors
@@ -217,21 +253,30 @@ to process-neighbor-influence
   ]
 end
 
+;; to update-fatigue
+;;   ask users [
+;;     set fatigue fatigue + fatigue-rate
+;;     if fatigue > 1 [ set fatigue 1 ]  ; Cap fatigue at 1
+;;     if fatigue = 1 [  ; Agents become immune to propaganda
+;;       set susceptibility 0
+;;     ]
+;;     if random-float 1 < 0.05 [  ; 5% chance to reset fatigue if not exposed to propaganda
+;;       let propaganda-exposure any? medias with [link-neighbor? myself and (media-type = "propaganda-left" or media-type = "propaganda-right")]
+;;       if not propaganda-exposure [
+;;         let new-fatigue fatigue - 0.1  ; Calculate new fatigue
+;;         set fatigue max (list new-fatigue 0)  ; Ensure fatigue does not go below 0
+;;         set susceptibility 0.2 + random-float 0.8  ; Reset susceptibility
+;;       ]
+;;     ]
+;;   ]
+;; end
+
+
 to update-fatigue
   ask users [
     set fatigue fatigue + fatigue-rate
-    if fatigue > 1 [ set fatigue 1 ]  ; Cap fatigue at 1
-    if fatigue = 1 [  ; Agents become immune to propaganda
-      set susceptibility 0
-    ]
-    if random-float 1 < 0.05 [  ; 5% chance to reset fatigue if not exposed to propaganda
-      let propaganda-exposure any? medias with [link-neighbor? myself and (media-type = "propaganda-left" or media-type = "propaganda-right")]
-      if not propaganda-exposure [
-        let new-fatigue fatigue - 0.1  ; Calculate new fatigue
-        set fatigue max (list new-fatigue 0)  ; Ensure fatigue does not go below 0
-        set susceptibility 0.2 + random-float 0.8  ; Reset susceptibility
-      ]
-    ]
+    if fatigue > 1 [ set fatigue 1 ]
+    if fatigue = 1 [ set susceptibility 0 ]  ; Agents become immune
   ]
 end
 
@@ -271,6 +316,10 @@ to update-statistics
   set neutral-effectiveness ifelse-value any? neutral-media
     [mean [influence-count] of neutral-media]
     [0]
+end
+
+to cleanup
+  file-close  ; Always close the file at the end
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -481,7 +530,7 @@ number-of-agents
 number-of-agents
 10
 500
-20.0
+200.0
 10
 1
 NIL
@@ -496,7 +545,7 @@ number-of-media
 number-of-media
 2
 20
-3.0
+4.0
 1
 1
 NIL
