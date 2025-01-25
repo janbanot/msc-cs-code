@@ -80,12 +80,14 @@ to setup-network
 
   ; Add connections to media nodes
   ask medias [
-    create-links-with n-of (round (number-of-agents * reach)) users
+    create-links-with n-of (round (number-of-agents * reach)) users [
+      set color gray  ; Set link color to gray
+    ]
   ]
 
   ; Layout for visualization
   layout-circle users (world-width / 3)
-  layout-circle medias (world-width / 6)  ; reduced radius for media nodes
+  layout-circle medias (world-width / 6)  ; Reduced radius for media nodes
 end
 
 to update-color  ; procedure for users
@@ -106,8 +108,35 @@ end
 to update-external-factors
   set economic-factor random-float 1
   if random-float 1 < 0.1 [  ; 10% chance of event
-    set current-event random 3
+    set current-event random 3  ; 0 = economic, 1 = scandal, 2 = debate
     set event-impact random-float 1
+    apply-event-impact  ; Call a new procedure to handle event effects
+  ]
+end
+
+to apply-event-impact
+  if current-event = 0 [  ; Economic event
+    ask users [
+      set susceptibility susceptibility + (event-impact * 0.2)  ; Increase susceptibility
+      if random-float 1 < 0.1 [  ; 10% chance to shift views
+        if political-view = "left" [ set political-view "right" ]
+        if political-view = "right" [ set political-view "left" ]
+      ]
+    ]
+  ]
+  if current-event = 1 [  ; Scandal event
+    ask users [
+      set susceptibility susceptibility + (event-impact * 0.3)  ; Increase susceptibility
+      if random-float 1 < 0.2 [  ; 20% chance to become undecided
+        set political-view "undecided"
+      ]
+    ]
+  ]
+  if current-event = 2 [  ; Debate event
+    ask users [
+      let new-fatigue fatigue - (event-impact * 0.1)  ; Calculate new fatigue
+      set fatigue max (list new-fatigue 0)  ; Ensure fatigue does not go below 0
+    ]
   ]
 end
 
@@ -117,6 +146,7 @@ to process-media-influence
     if any? nearby-media [
       let old-view political-view
       let media-effect 0
+      let neutral-effect 0
 
       ask nearby-media [
         if media-type = "propaganda-left" and [political-view] of myself != "left" [
@@ -125,9 +155,12 @@ to process-media-influence
         if media-type = "propaganda-right" and [political-view] of myself != "right" [
           set media-effect media-effect - (effectiveness * (1 - [fatigue] of myself))
         ]
+        if media-type = "neutral" [
+          set neutral-effect neutral-effect + (effectiveness * 0.5)  ; Neutral content has half the effectiveness
+        ]
       ]
 
-      ; Change opinion based on cumulative media effect
+      ; Apply media and neutral effects
       if media-effect > susceptibility [
         set political-view "left"
         ask nearby-media with [media-type = "propaganda-left"] [
@@ -139,6 +172,9 @@ to process-media-influence
         ask nearby-media with [media-type = "propaganda-right"] [
           set influence-count influence-count + 1
         ]
+      ]
+      if neutral-effect > (susceptibility * 0.5) [  ; Neutral content can make agents undecided
+        set political-view "undecided"
       ]
 
       if political-view != old-view [
@@ -184,7 +220,18 @@ end
 to update-fatigue
   ask users [
     set fatigue fatigue + fatigue-rate
-    if fatigue > 1 [ set fatigue 1 ]
+    if fatigue > 1 [ set fatigue 1 ]  ; Cap fatigue at 1
+    if fatigue = 1 [  ; Agents become immune to propaganda
+      set susceptibility 0
+    ]
+    if random-float 1 < 0.05 [  ; 5% chance to reset fatigue if not exposed to propaganda
+      let propaganda-exposure any? medias with [link-neighbor? myself and (media-type = "propaganda-left" or media-type = "propaganda-right")]
+      if not propaganda-exposure [
+        let new-fatigue fatigue - 0.1  ; Calculate new fatigue
+        set fatigue max (list new-fatigue 0)  ; Ensure fatigue does not go below 0
+        set susceptibility 0.2 + random-float 0.8  ; Reset susceptibility
+      ]
+    ]
   ]
 end
 
@@ -207,6 +254,8 @@ to update-statistics
 
   if total-decided > 0 [
     set polarization-index abs (left-count - right-count) / total-decided
+    ; Adjust for undecided agents
+    set polarization-index polarization-index * (1 - (undecided-percentage / 100))
   ]
 
   ; Update media effectiveness
@@ -352,10 +401,10 @@ avg-opinion-changes
 11
 
 MONITOR
-5
-419
-233
-464
+7
+445
+235
+490
 Most Influential Media Impact
 most-influential-media
 0
@@ -363,10 +412,10 @@ most-influential-media
 11
 
 MONITOR
-5
-471
-233
-516
+7
+497
+235
+542
 Propaganda Effectiveness
 propaganda-effectiveness
 3
@@ -374,10 +423,10 @@ propaganda-effectiveness
 11
 
 MONITOR
-5
-525
-233
-570
+7
+551
+235
+596
 Neutral Media Effectiveness
 neutral-effectiveness
 3
