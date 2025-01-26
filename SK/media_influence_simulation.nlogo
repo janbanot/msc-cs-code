@@ -33,18 +33,37 @@ globals [
   total-opinion-changes
   avg-opinion-changes
   most-influential-media
-  propaganda-effectiveness
+
+  ;; Hardcoded parameters
+  neighbor-connections  ; Number of initial connections per node
+  rewiring-probability  ; Probability of rewiring in small-world network
+  neighbor-influence-threshold  ; Minimum ratio needed for neighbor influence
+  fatigue-rate         ; Rate at which agents become fatigued by propaganda
+
+  ;; Media effectiveness values
+  left-propaganda-effectiveness
+  right-propaganda-effectiveness
   neutral-effectiveness
 ]
 
 to setup
   clear-all
 
+  ;; Set hardcoded parameter values
+  set neighbor-connections 8
+  set rewiring-probability 0.8
+  set neighbor-influence-threshold 0.55
+  set fatigue-rate 0.005
+
+  ;; Set media effectiveness from sliders
+  set left-propaganda-effectiveness left-propaganda-effectiveness-slider
+  set right-propaganda-effectiveness right-propaganda-effectiveness-slider
+  set neutral-effectiveness neutral-effectiveness-slider
+
   set output-file "/Users/janbanot/Dev/studia/msc-cs-code/SK/simulations/test1-1.csv"
   file-open output-file
   file-print "tick,left,undecided,right,polarization-index,total-opinion-changes,propaganda-effectivness,neutral-effectivness"
 
-  ;; Values will be taken from sliders
   reset-ticks
   setup-agents
   setup-media
@@ -73,7 +92,7 @@ to setup-media
     set shape "square"
     set media-type "propaganda-left"
     set reach random-float 1
-    set effectiveness random-float 1
+    set effectiveness left-propaganda-effectiveness
     set influence-count 0
     setxy random-xcor random-ycor
     set color orange
@@ -84,18 +103,18 @@ to setup-media
     set shape "square"
     set media-type "propaganda-right"
     set reach random-float 1
-    set effectiveness random-float 1
+    set effectiveness right-propaganda-effectiveness
     set influence-count 0
     setxy random-xcor random-ycor
     set color violet
   ]
 
-  ;; Create meutral
+  ;; Create neutral
 ;;  create-medias number-of-media [
 ;;    set shape "square"
 ;;    set media-type "neutral"
 ;;    set reach random-float 1
-;;    set effectiveness random-float 1
+;;    set effectiveness neutral-effectiveness
 ;;    set influence-count 0
 ;;    setxy random-xcor random-ycor
 ;;    set color pink
@@ -134,11 +153,16 @@ to go
 
   if ticks mod 10 = 0 [ save-data ]  ; Save data every 10 ticks
 
+  ; Check if 100 ticks have passed
+  if ticks >= 100 [
+    stop
+  ]
+
   tick
 end
 
 to save-data
-  file-print (word ticks "," left-percentage "," right-percentage "," undecided-percentage "," polarization-index "," total-opinion-changes "," propaganda-effectiveness "," neutral-effectiveness)
+  file-print (word ticks "," left-percentage "," right-percentage "," undecided-percentage "," polarization-index "," total-opinion-changes)
 end
 
 to update-external-factors
@@ -309,13 +333,6 @@ to update-statistics
   let propaganda-media medias with [media-type = "propaganda-left" or media-type = "propaganda-right"]
   let neutral-media medias with [media-type = "neutral"]
 
-  set propaganda-effectiveness ifelse-value any? propaganda-media
-    [mean [influence-count] of propaganda-media]
-    [0]
-
-  set neutral-effectiveness ifelse-value any? neutral-media
-    [mean [influence-count] of neutral-media]
-    [0]
 end
 
 to cleanup
@@ -323,13 +340,13 @@ to cleanup
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-386
+250
 10
-971
-596
+887
+648
 -1
 -1
-17.5
+19.061
 1
 10
 1
@@ -384,10 +401,10 @@ NIL
 1
 
 MONITOR
-8
-198
-63
-243
+6
+294
+61
+339
 Left %
 left-percentage
 0
@@ -395,10 +412,10 @@ left-percentage
 11
 
 MONITOR
-175
-196
-232
-241
+173
+294
+230
+339
 Right %
 right-percentage
 0
@@ -406,10 +423,10 @@ right-percentage
 11
 
 MONITOR
-78
-198
-163
-243
+76
+294
+161
+339
 Undecided %
 undecided-percentage
 0
@@ -417,10 +434,10 @@ undecided-percentage
 11
 
 MONITOR
-7
-257
-233
-302
+5
+353
+231
+398
 Polarization Index
 polarization-index
 3
@@ -428,10 +445,10 @@ polarization-index
 11
 
 MONITOR
-6
-313
-234
-358
+4
+409
+232
+454
 Total Opinion Changes
 total-opinion-changes
 0
@@ -439,54 +456,21 @@ total-opinion-changes
 11
 
 MONITOR
-6
-366
-233
-411
+5
+464
+232
+509
 Avg Opinion Changes
 avg-opinion-changes
 3
 1
 11
 
-MONITOR
-7
-445
-235
-490
-Most Influential Media Impact
-most-influential-media
-0
-1
-11
-
-MONITOR
-7
-497
-235
-542
-Propaganda Effectiveness
-propaganda-effectiveness
-3
-1
-11
-
-MONITOR
-7
-551
-235
-596
-Neutral Media Effectiveness
-neutral-effectiveness
-3
-1
-11
-
 PLOT
-981
+908
 11
 1332
-178
+302
 Political Distribution
 Time
 Percentage
@@ -503,10 +487,10 @@ PENS
 "Undecided" 1.0 0 -7500403 true "" "plot undecided-percentage"
 
 PLOT
-982
-191
-1333
-364
+908
+314
+1332
+627
 Opinion Changes
 Time
 Changes
@@ -523,9 +507,9 @@ PENS
 
 SLIDER
 10
-59
-180
-92
+61
+242
+94
 number-of-agents
 number-of-agents
 10
@@ -538,9 +522,9 @@ HORIZONTAL
 
 SLIDER
 7
-103
-179
-136
+105
+240
+138
 number-of-media
 number-of-media
 2
@@ -552,61 +536,46 @@ NIL
 HORIZONTAL
 
 SLIDER
-5
-144
-180
-177
-neighbor-connections
-neighbor-connections
-2
-10
-8.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-199
-58
-377
-91
-rewiring-probability
-rewiring-probability
+6
+148
+239
+181
+left-propaganda-effectiveness-slider
+left-propaganda-effectiveness-slider
 0
 1
-0.8
+0.7
 0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-197
-103
-378
-136
-fatigue-rate
-fatigue-rate
+6
+237
+237
+270
+right-propaganda-effectiveness-slider
+right-propaganda-effectiveness-slider
 0
+1
+0.7
 0.1
-0.005
-0.001
 1
 NIL
 HORIZONTAL
 
 SLIDER
-197
-147
-377
-180
-neighbor-influence-threshold
-neighbor-influence-threshold
+6
+190
+239
+223
+neutral-effectiveness-slider
+neutral-effectiveness-slider
+0
+1
 0.5
-0.9
-0.55
-0.05
+0.1
 1
 NIL
 HORIZONTAL
