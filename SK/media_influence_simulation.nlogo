@@ -60,23 +60,50 @@ to setup
   set right-propaganda-effectiveness right-propaganda-effectiveness-slider
   set neutral-effectiveness neutral-effectiveness-slider
 
-  set output-file "/Users/janbanot/Dev/studia/msc-cs-code/SK/simulations/test1-1.csv"
+  set output-file "test_file.csv"  ; Save in current directory
+  ; Open file and write header
   file-open output-file
-  file-print "tick,left,undecided,right,polarization-index,total-opinion-changes,propaganda-effectivness,neutral-effectivness"
+  file-print "tick,left,undecided,right,polarization-index,total-opinion-changes"
+  file-close  ; Close after writing header
 
   reset-ticks
   setup-agents
   setup-media
   setup-network
   update-statistics
+  save-data  ; Save the initial state after setup
   reset-ticks
 end
 
 to setup-agents
-  create-users number-of-agents [
+  let left-count number-of-agents / 3
+  let right-count number-of-agents / 3
+  let undecided-count number-of-agents - left-count - right-count
+
+  create-users left-count [
     set shape "person"
-    set political-view one-of ["left" "right" "undecided"]
-    set susceptibility 0.2 + random-float 0.8  ; ensure minimum 0.2 susceptibility
+    set political-view "left"
+    set susceptibility 0.2 + random-float 0.8
+    set fatigue 0
+    set initial-view political-view
+    set opinion-changes 0
+    update-color
+  ]
+
+  create-users right-count [
+    set shape "person"
+    set political-view "right"
+    set susceptibility 0.2 + random-float 0.8
+    set fatigue 0
+    set initial-view political-view
+    set opinion-changes 0
+    update-color
+  ]
+
+  create-users undecided-count [
+    set shape "person"
+    set political-view "undecided"
+    set susceptibility 0.2 + random-float 0.8
     set fatigue 0
     set initial-view political-view
     set opinion-changes 0
@@ -86,9 +113,10 @@ end
 
 to setup-media
   let half-number-of-media number-of-media / 2
+  let more-media number-of-media + 1
 
   ;; Create left propaganda media
-  create-medias half-number-of-media [
+  create-medias more-media [
     set shape "square"
     set media-type "propaganda-left"
     set reach random-float 1
@@ -110,15 +138,15 @@ to setup-media
   ]
 
   ;; Create neutral
-;;  create-medias number-of-media [
-;;    set shape "square"
-;;    set media-type "neutral"
-;;    set reach random-float 1
-;;    set effectiveness neutral-effectiveness
-;;    set influence-count 0
-;;    setxy random-xcor random-ycor
-;;    set color pink
-;;  ]
+  create-medias half-number-of-media [
+    set shape "square"
+    set media-type "neutral"
+    set reach random-float 1
+    set effectiveness neutral-effectiveness
+    set influence-count 0
+    setxy random-xcor random-ycor
+    set color pink
+  ]
 
 end
 
@@ -162,7 +190,9 @@ to go
 end
 
 to save-data
-  file-print (word ticks "," left-percentage "," right-percentage "," undecided-percentage "," polarization-index "," total-opinion-changes)
+  file-open output-file  ; Open in append mode
+  file-print (word ticks "," left-percentage "," undecided-percentage "," right-percentage "," polarization-index "," total-opinion-changes)
+  file-close  ; Close after each write
 end
 
 to update-external-factors
@@ -277,25 +307,6 @@ to process-neighbor-influence
   ]
 end
 
-;; to update-fatigue
-;;   ask users [
-;;     set fatigue fatigue + fatigue-rate
-;;     if fatigue > 1 [ set fatigue 1 ]  ; Cap fatigue at 1
-;;     if fatigue = 1 [  ; Agents become immune to propaganda
-;;       set susceptibility 0
-;;     ]
-;;     if random-float 1 < 0.05 [  ; 5% chance to reset fatigue if not exposed to propaganda
-;;       let propaganda-exposure any? medias with [link-neighbor? myself and (media-type = "propaganda-left" or media-type = "propaganda-right")]
-;;       if not propaganda-exposure [
-;;         let new-fatigue fatigue - 0.1  ; Calculate new fatigue
-;;         set fatigue max (list new-fatigue 0)  ; Ensure fatigue does not go below 0
-;;         set susceptibility 0.2 + random-float 0.8  ; Reset susceptibility
-;;       ]
-;;     ]
-;;   ]
-;; end
-
-
 to update-fatigue
   ask users [
     set fatigue fatigue + fatigue-rate
@@ -333,10 +344,6 @@ to update-statistics
   let propaganda-media medias with [media-type = "propaganda-left" or media-type = "propaganda-right"]
   let neutral-media medias with [media-type = "neutral"]
 
-end
-
-to cleanup
-  file-close  ; Always close the file at the end
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -503,7 +510,6 @@ false
 "" ""
 PENS
 "Total Changes" 1.0 0 -16777216 true "" "plot total-opinion-changes"
-"Average Changes" 1.0 0 -10899396 true "" "plot avg-opinion-changes"
 
 SLIDER
 10
@@ -514,7 +520,7 @@ number-of-agents
 number-of-agents
 10
 500
-200.0
+150.0
 10
 1
 NIL
@@ -529,7 +535,7 @@ number-of-media
 number-of-media
 2
 20
-4.0
+2.0
 1
 1
 NIL
