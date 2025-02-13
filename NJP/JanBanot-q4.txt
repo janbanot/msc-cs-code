@@ -1,0 +1,253 @@
+1) Napisz jako funkcję lambda: funkcja, która przyjmuje s: String i num: Int i zwraca łańcuch z liczbą połączonych kopii s.
+Odpowiedź:
+```
+fun main() {
+    val repeatString: (String, Int) -> String = { s, num -> s.repeat(num) }
+
+    val result = repeatString("abc", 3)
+    println(result)
+}
+```
+
+2) Przepisz używając it.
+
+val f : (String) -> String = { s:String -> s + "!" }
+Odpowiedź:
+```
+val f: (String) -> String = { it + "!" }
+```
+
+3) Podobnie jak w przypadku klasy Pair, utwórz klasę Quadruple, która może pomieścić cztery elementy danych. Utwórz wystąpienie z przykładowymi elementami typu Int, Int, Double i String.
+Odpowiedź:
+```
+data class Quadruple<A, B, C, D>(
+    val first: A,
+    val second: B,
+    val third: C,
+    val fourth: D
+)
+
+fun main() {
+    val quadruple = Quadruple(1, 2, 3.14, "example")
+    println(quadruple)  // Output: Quadruple(first=1, second=2, third=3.14, fourth=example)
+}
+```
+
+4) Napisz generyczną klasę Sorter z parametrem typu T i odpowiednim powiązaniem typu, który ma listę wartości val list:MutableList<T>  i funkcję fun add(value:T) Przy każdym wywołaniu funkcji parametr musi zostać dodany do listy, a właściwość listy musi zostać posortowana zgodnie z jej naturalną kolejnością sortowania.
+Odpowiedź:
+```
+class Sorter<T : Comparable<T>> {
+    val list: MutableList<T> = mutableListOf()
+
+    fun add(value: T) {
+        list.add(value)
+        list.sort()
+    }
+}
+
+fun main() {
+    val sorter = Sorter<Int>()
+    sorter.add(3)
+    sorter.add(1)
+    sorter.add(2)
+    println(sorter.list)
+
+    val stringSorter = Sorter<String>()
+    stringSorter.add("banana")
+    stringSorter.add("apple")
+    stringSorter.add("cherry")
+    println(stringSorter.list)
+}
+```
+
+5) Do przykładu kalkulatora (CustomAnnotationsAndVisibility.txt) dodaj nową adnotację @NotNegative i nową operację sqrt() dla pierwiastka kwadratowego. Upewnij się, że ujemny parametr dla tego operatora jest niedozwolony. Uwaga: rzeczywisty pierwiastek kwadratowy jest obliczany za pomocą java.lang.Math.sqrt ().
+
+
+6) Biorąc pod uwagę klasę danych data class Employee (val lastName: String, val firstName: String, val ssn: String) i listę
+
+val l = listOf(
+    Employee("Smith", "Eve", "012-12-5678"),
+    Employee("Carpenter", "John", "123-06-4901"),
+    Employee("Cugar", "Clara", "034-00-1111"),
+    Employee("Lionsgate", "Peter", "965-11-4561"),
+    Employee("Disney", "Quentin", "888-12-3412")
+)
+
+pobierz nową niezmienną listę z tej posortowanej według numeru SSN.
+Odpowiedź:
+```
+data class Employee(val lastName: String, val firstName: String, val ssn: String)
+
+fun main() {
+    val l = listOf(
+        Employee("Smith", "Eve", "012-12-5678"),
+        Employee("Carpenter", "John", "123-06-4901"),
+        Employee("Cugar", "Clara", "034-00-1111"),
+        Employee("Lionsgate", "Peter", "965-11-4561"),
+        Employee("Disney", "Quentin", "888-12-3412")
+    )
+
+    val sortedList = l.sortedBy { it.ssn }
+
+    println(sortedList)
+}
+```
+
+7) Mając listę pracowników z ćwiczenia 6, utwórz niezmienną map mapującą numery SSN do pracowników.
+Odpowiedź:
+```
+data class Employee(val lastName: String, val firstName: String, val ssn: String)
+
+fun main() {
+    val l = listOf(
+        Employee("Smith", "Eve", "012-12-5678"),
+        Employee("Carpenter", "John", "123-06-4901"),
+        Employee("Cugar", "Clara", "034-00-1111"),
+        Employee("Lionsgate", "Peter", "965-11-4561"),
+        Employee("Disney", "Quentin", "888-12-3412")
+    )
+
+    val ssnToEmployeeMap = l.associateBy { it.ssn }
+
+    println(ssnToEmployeeMap)
+}
+```
+
+8) Jaki jest wynik
+
+listOf(listOf(1, 2), listOf(3, 4)).flatten()
+Odpowiedź: [1, 2, 3, 4]
+
+9) Jaki jest wynik
+
+listOf(listOf(1, 2), listOf(3, 4)).flatMap { it.map { it.toString() } }
+Odpowiedź: ["1", "2", "3", "4"]
+
+10) Mając listę pracowników z ćwiczenia 6, utwórz nową niezmienną listę zawierającą tylko numery SSN zaczynające się od 0. Wskazówka: String.startsWith (...) sprawdza, czy ciąg znaków zaczyna się od określonych znaków.
+Odpowiedź:
+```
+data class Employee(val lastName: String, val firstName: String, val ssn: String)
+
+fun main() {
+    val l = listOf(
+        Employee("Smith", "Eve", "012-12-5678"),
+        Employee("Carpenter", "John", "123-06-4901"),
+        Employee("Cugar", "Clara", "034-00-1111"),
+        Employee("Lionsgate", "Peter", "965-11-4561"),
+        Employee("Disney", "Quentin", "888-12-3412")
+    )
+
+    val ssnStartingWith0 = l.filter { it.ssn.startsWith("0") }
+                            .map { it.ssn }
+
+    println(ssnStartingWith0)  // Output: [012-12-5678, 034-00-1111]
+}
+```
+
+11) Utwórz sprawdzenie dla listy listOf (1, 2, 3, 4), aby zobaczyć, czy wszystkie elementy są większe niż 0.
+Odpowiedź:
+```
+fun main() {
+    val list = listOf(1, 2, 3, 4)
+    val allGreaterThanZero = list.all { it > 0 }
+    println(allGreaterThanZero)  // Output: true
+}
+```
+
+12) Mając listę l typu Int, znajdź sposób jednowyrażeniowy, nie używając if, aby zgłosić wyjątek, jeśli lista zawiera 42. Wskazówka: użyj funkcji find () lub zawiera (), prawdopodobnie takeIf () i ?.run.
+Odpowiedź:
+```
+fun main() {
+    val l = listOf(1, 2, 3, 42, 5)
+
+    l.contains(42).takeIf { it }?.run { throw IllegalArgumentException("List contains 42") }
+}
+```
+
+13) Biorąc pod uwagę klasę danych, data class Parcel (val receiverId: Int, val weight: Double) i listę
+
+val l = listOf( Parcel(1267395, 1.45),
+    Parcel(1515670, 0.46),
+    Parcel(8345674, 2.50),
+    Parcel(3418566, 1.47),
+    Parcel(3491245, 3.04)
+)
+
+obliczyć sumę wag bez używania pętli for lub while.
+Odpowiedź:
+```
+data class Parcel(val receiverId: Int, val weight: Double)
+
+fun main() {
+    val l = listOf(
+        Parcel(1267395, 1.45),
+        Parcel(1515670, 0.46),
+        Parcel(8345674, 2.50),
+        Parcel(3418566, 1.47),
+        Parcel(3491245, 3.04)
+    )
+
+    val totalWeight = l.sumOf { it.weight }
+    println(totalWeight)
+}
+```
+
+14) Utwórz zegar ClockTwiceAsFast z konstruktorem pobierającym czas z zegara systemowego UTC. Następnie zegar powinien działać dwa razy szybciej. Zignoruj informacje o strefie. Aby udowodnić, że działa zgodnie z założeniami, użyj
+
+import java.time.*
+val myClock = ClockTwiceAsFast()
+Log.d("LOG", LocalDateTime.now(myClock).format(
+      DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+Thread.sleep(1000L)
+Log.d("LOG", LocalDateTime.now(myClock).format(
+      DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+Odpowiedź:
+```
+import java.time.*
+import java.time.format.DateTimeFormatter
+
+class ClockTwiceAsFast : Clock() {
+    private val baseClock = Clock.systemUTC()
+    private val startInstant = baseClock.instant()
+    private val startMillis = System.currentTimeMillis()
+
+    override fun getZone(): ZoneId {
+        return baseClock.zone
+    }
+
+    override fun withZone(zone: ZoneId): Clock {
+        return ClockTwiceAsFast()
+    }
+
+    override fun instant(): Instant {
+        val elapsedMillis = System.currentTimeMillis() - startMillis
+        val fastMillis = elapsedMillis * 2
+        return startInstant.plusMillis(fastMillis)
+    }
+}
+
+fun main() {
+    val myClock = ClockTwiceAsFast()
+    println(LocalDateTime.now(myClock).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+    Thread.sleep(1000L)
+    println(LocalDateTime.now(myClock).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+}
+```
+
+15) Napisz funkcję rozszerzającą String, która pozwoli nam pisać "Hello" % ".*ll.*"
+zamiast
+
+"Hello".matches(Regex(".*ll.*"))
+
+Wskazówka: operator% pisze jako .rem ().
+Odpowiedź:
+```
+operator fun String.rem(pattern: String): Boolean {
+    return this.matches(Regex(pattern))
+}
+
+fun main() {
+    val result = "Hello" % ".*ll.*"
+    println(result)
+}
+```

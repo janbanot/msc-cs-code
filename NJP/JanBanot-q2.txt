@@ -1,0 +1,337 @@
+1) Które z poniższych stwierdzeń jest prawdziwe? - Prawidłowa odpowiedź: 5
+
+1. Użycie wielu pojedynczych obiektów pomaga poprawić jakość kodu.
+2. Możliwe jest tworzenie instancji obiektów singletonowych.
+3. Aby zadeklarować obiekty pojedyncze, użyj dowolnego obiektu typu object, singleton lub singleton.
+4. Obiekty singleton nie mają stanu.
+5. Obiekty singleton mogą mieć konstruktor.
+
+2) Utwórz pojedynczy obiekt Constants z następującymi właściwościami: numberOf- Tabs = 5, windowTitle = "Astaria", prefsFile = "prefs.properties". Napisz kod, aby wydrukować wszystkie stałe do celów diagnostycznych. Wskazówka: do formatowania możesz użyć \ n wewnątrz ciągów znaków do podziału wiersza.
+Odpowiedź:
+```
+object Constants {
+    const val numberOfTabs = 5
+    const val windowTitle = "Astaria"
+    const val prefsFile = "prefs.properties"
+}
+
+fun main() {
+    println("numberOfTabs: ${Constants.numberOfTabs}\nwindowTitle: ${Constants.windowTitle}\nprefsFile: ${Constants.prefsFile}")
+}
+```
+
+3) Utwórz klasę Triangle. Dodawaj dowolnie parametry i właściwości konstruktora, ale także stwórz obiekt towarzyszący ze stałą NUMBER_OF_CORNERS = 3. Wewnątrz klasy utwórz funkcję info () wskazującą liczbę rogów.
+Odpowiedź:
+```
+class Triangle(val base: Double, val height: Double) {
+    companion object {
+        const val NUMBER_OF_CORNERS = 3
+    }
+
+    fun info() {
+        println("Liczba rogów: $NUMBER_OF_CORNERS")
+    }
+}
+
+fun main() {
+    val triangle = Triangle(3.0, 4.0)
+    triangle.info()
+}
+```
+
+4) Wewnątrz funkcji main () utwórz instancję klasy Triangle z Ex. 3, a następnie przypisz liczbę rzutów rożnych do jakiegoś val numberOfCorners.
+Odpowiedź:
+```
+class Triangle(val base: Double, val height: Double) {
+    companion object {
+        const val NUMBER_OF_CORNERS = 3
+    }
+
+    fun info() {
+        println("Liczba rogów: $NUMBER_OF_CORNERS")
+    }
+}
+
+fun main() {
+    val triangle = Triangle(3.0, 4.0)
+    triangle.info()
+    val numberOfCorners = Triangle.NUMBER_OF_CORNERS
+    println("Number of corners: $numberOfCorners")
+}
+```
+
+5) Cząstki elementarne mają co najmniej trzy wspólne cechy: masę, ładunek i spin. Utwórz interfejs ElementaryParticle z trzema odpowiadającymi funkcjami do pobrania: mass (): Double, charge (): Double i spin (): Double. Utwórz klasy Electron i Proton, które implementują interfejs. Elektron zwraca masę 9,11 · 10 -31, którą należy wprowadzić jako 9,11e-31, ładunek -1,0 i spin 0,5. Proton zwraca masę 1,67 · 10 -27, która ma być wprowadzona jako 1,67e-27, ładunek i spin 0,5.
+Odpowiedź:
+```
+interface ElementaryParticle {
+    fun mass(): Double
+    fun charge(): Double
+    fun spin(): Double
+}
+
+class Electron : ElementaryParticle {
+    override fun mass() = 9.11e-31
+    override fun charge() = -1.0
+    override fun spin() = 0.5
+}
+
+class Proton : ElementaryParticle {
+    override fun mass() = 1.67e-27
+    override fun charge() = 1.0
+    override fun spin() = 0.5
+}
+
+fun main() {
+    val electron = Electron()
+    val proton = Proton()
+
+    println("Electron - Mass: ${electron.mass()}, Charge: ${electron.charge()}, Spin: ${electron.spin()}")
+    println("Proton - Mass: ${proton.mass()}, Charge: ${proton.charge()}, Spin: ${proton.spin()}")
+}
+```
+
+6) Biorąc pod uwagę interfejs i zajęcia z ćwiczenia 5, które z nich jest prawdziwe?
+	1. Można utworzyć instancję ElementaryParticle: var p = ElementaryParticle ().
+	2. Elektron można utworzyć instancję: elektron val = elektron ().
+	3. Proton można utworzyć instancję: val proton = Proton ().
+	4. Inicjalizacja var p: ElementaryParticle = Electron () jest możliwa.
+	5. Ponowne przypisanie p = Proton () jest możliwe.
+	6. Inicjalizacja var p: Proton = Electron () jest możliwa.
+Prawidłowa odpowiedź: 2, 3, 4, 5
+
+7) Wyobraź sobie, że w grze NumberGuess chcemy móc wypróbować różne funkcje generowania liczb losowych. Utwórz interfejs RandomNumberGenerator z jedną funkcją fun rnd (minInt: Int, maxInt: Int): Int. Utwórz klasę StdRandom implementującą ten interfejs przy użyciu bieżącego kodu z klasy MainActivity: val span = maxInt - minInt + 1; return minInt + Math.floor (Math.random () * span). toInt (). Utwórz kolejną klasę RandomRandom, również implementującą interfejs, ale z wartością właściwości rnd: Random = Random () (dodaj import java.util. * Do importu) i używając kodu minInt + rnd.nextInt (maxInt - minInt + 1). Dodaj właściwość typu RandomNumberGenerator do działania przy użyciu jednej z implementacji. Zmień funkcję start () w działaniu, aby używać tego interfejsu.
+Odpowiedź:
+```
+import java.util.*
+
+interface RandomNumberGenerator {
+    fun rnd(minInt: Int, maxInt: Int): Int
+}
+
+class StdRandom : RandomNumberGenerator {
+    override fun rnd(minInt: Int, maxInt: Int): Int {
+        val span = maxInt - minInt + 1
+        return minInt + Math.floor(Math.random() * span).toInt()
+    }
+}
+
+class RandomRandom : RandomNumberGenerator {
+    private val rnd: Random = Random()
+
+    override fun rnd(minInt: Int, maxInt: Int): Int {
+        return minInt + rnd.nextInt(maxInt - minInt + 1)
+    }
+}
+
+class NumberGuessGame(private val randomNumberGenerator: RandomNumberGenerator) {
+    fun start() {
+        val randomNumber = randomNumberGenerator.rnd(1, 100)
+        println("Generated random number: $randomNumber")
+    }
+}
+
+fun main() {
+    val stdRandom = StdRandom()
+    val randomRandom = RandomRandom()
+
+    val gameWithStdRandom = NumberGuessGame(stdRandom)
+    gameWithStdRandom.start()
+
+    val gameWithRandomRandom = NumberGuessGame(randomRandom)
+    gameWithRandomRandom.start()
+}
+```
+
+8) Co jest nie tak z poniższym kodem?
+
+class Triangle (color: String) {
+     fun changeColor (newColor: String) {
+         color = newColor
+     }
+}
+Odpowiedź: color jest przekazywane do konstruktora, ale nie jest zadeklarowane jako właściwość klasy. Pojawi się błąd kompilacji
+
+9) Utwórz klasę A z jedną właściwością var a: Int. Wykonaj przypisania: (a) ustaw na 1 w deklaracji, (b) ustaw na 2 w bloku init {}, (c) ustaw na 3 w funkcji fun b () {...} i (d ) ustaw go na 4 wewnątrz funkcji głównej.
+Odpowiedź:
+```
+class A {
+    var a: Int = 1
+
+    init {
+        a = 2
+    }
+
+    fun b() {
+        a = 3
+    }
+}
+
+fun main() {
+    val instance = A()
+    instance.b()
+    instance.a = 4
+    println("Wartość a: ${instance.a}")
+}
+```
+
+10) Znajdź krótszy sposób pisania
+
+val a = 42
+val s = "Jeśli dodamy 4 do a otrzymamy" + (a + 4) .toString ()
+
+unikanie łączenia ciągów „...” + „...”
+Odpowiedź:
+```
+val a = 42
+val s = "Jeśli dodamy 4 do a otrzymamy ${a + 4}"
+```
+
+11) Które z poniższych stwierdzeń jest prawdziwe?
+
+	1. Możesz wykonać przypisanie val a: Int = null.
+	2. Można zapisać val a: Int? = null; val b: Long = a.toLong ().
+	3. Można zapisać val a: Int? = null; val b: Long? = a.toLong ().
+	4. Można zapisać val a: Int? = null; val b: Long? = a?.toLong ().
+Odpowiedź: 4 jest prawdziwe
+
+12) Co jest nie tak z następującą funkcją?
+
+fun multiply10(d:Double):Double {
+    d = d * 10
+    return d
+}
+Odpowiedź: w Kotlinie parametry funkcji są domyślnie niezmienne (val). Oznacza to, że nie można przypisać nowej wartości do parametru d w ciele funkcji - pojawi się błąd kompilacji
+
+13) Co jest nie tak z następującą funkcją?
+
+fun printOut(d:Double) {
+    println(d)
+    return
+}
+Odpowiedź: return jest zbędne, ponieważ funkcja nie zwraca wartości
+
+14) Czy poniższe stwierdzenia są prawdziwe?
+
+fun printOut(d:Double) {
+    println(d)
+}
+
+jest taki sam jak
+
+fun printOut(d:Double):Unit {
+    println(d)
+}
+Odpowiedź: Tak, oba zapisy są równoważne
+
+15) Utwórz krótszą wersję tej klasy:
+
+class A(val a:Int) {
+    fun add(b:Int):Int {
+        return a + b
+    }
+    fun mult(b:Int):Int {
+        return a * b
+    }
+}
+Odpowiedź:
+```
+class A(val a: Int) {
+    fun add(b: Int) = a + b
+    fun mult(b: Int) = a * b
+}
+```
+
+16) Utwórz interfejs AInterface opisujący całą klasę A z Ex. 15.
+Odpowiedź:
+```
+interface AInterface {
+    val a: Int
+    fun add(b: Int): Int
+    fun mult(b: Int): Int
+}
+
+class A(override val a: Int) : AInterface {
+    override fun add(b: Int) = a + b
+    override fun mult(b: Int) = a * b
+}
+```
+
+17) Jaki jest wynik
+
+class A {
+    val xyz:Int = 7
+    fun meth1(xyz:Int):String {
+        return "meth1: " + xyz +
+              " " + this.xyz
+    }
+}
+
+fun main(args:Array<String>) {
+    val a = A()
+    println(a.meth1(42))
+}
+Odpowiedź: meth1: 42 7
+
+
+18) Biorąc pod uwagę tę klasę
+
+class A {
+    companion object {
+        fun x(a:Int):Int { return a + 7 }
+    }
+}
+
+opisać, jak uzyskać dostęp do funkcji x () z 42 jako parametrem spoza klasy w funkcji println ().
+Odpowiedź:
+```
+fun main() {
+    println(A.x(42))
+}
+```
+
+19) Biorąc pod uwagę tę klasę
+
+class Person {
+    var firstName:String? = null
+    var lastName:String? = null
+    fun setName(fName:String, lName:String) {
+        firstName = fName
+        lastName = lName
+    }
+}
+
+utwórz instancję i użyj nazwanych parametrów, aby ustawić nazwę na John Doe.
+Odpowiedź:
+```
+fun main() {
+    val person = Person().apply {
+        setName(fName = "John", lName = "Doe")
+    }
+    println("First Name: ${person.firstName}, Last Name: ${person.lastName}")
+}
+```
+
+20) Do deklaracji funkcji
+
+fun set(lastName:String,
+    firstName:String,
+    birthDay?:String,
+    ssn:String?) { ... }
+
+dodaj jako domyślne lastName = "", firstName = "", birthDay = null, ssn = null. Następnie wywołaj funkcję, używając nazwanych parametrów, podając tylko lastName = "Smith" i ssn = "1234567890"
+Odpowiedź:
+```
+fun set(
+    lastName: String = "",
+    firstName: String = "",
+    birthDay: String? = null,
+    ssn: String? = null
+) {
+    // Implementacja funkcji
+    println("Last Name: $lastName, First Name: $firstName, Birth Day: $birthDay, SSN: $ssn")
+}
+
+fun main() {
+    set(lastName = "Smith", ssn = "1234567890")
+}
+```
