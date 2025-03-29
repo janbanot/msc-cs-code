@@ -1,0 +1,20 @@
+piłka
+mysz
+duża piłka
+mała piłka
+dzwonek
+pluszak
+duży pluszak
+drapak
+mały drapak
+piłeczka
+laser
+wielki laser
+pająk
+robot
+mały robot
+sznurek
+wstążka
+długa wstążka
+pudełko
+małe pudełko
