@@ -254,7 +254,9 @@ def simulate_cat_walking(cat, all_toys, iterations=100):
                 print(f"{cat.name} zmienia zdanie na temat zabawki '{toy}'.")
                 cat.change_mind(toy)
             else:
-                print(f"{cat.name} jest niezadowolony, widząc zabawkę, której nie lubi.")
+                print(
+                    f"{cat.name} jest niezadowolony, widząc zabawkę, której nie lubi."
+                )
         else:
             if random.random() < 0.7:
                 print(f"{cat.name} jest podekscytowany nową zabawką!")
