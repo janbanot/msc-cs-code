@@ -1,0 +1,10 @@
+identyfikator,ciśnienie,temperatura,hałas,prędkość
+S1,norma,wysoka,norma,zwiększenie
+S2,norma,średnia,norma,zwiększenie
+S3,norma,niska,wysoki,zmniejszenie
+S4,norma,wysoka,norma,zwiększenie
+S5,niskie,średnia,wysoki,zwiększenie
+S6,norma,średnia,norma,norma
+S7,niskie,wysoka,norma,zwiększenie
+S8,niskie,niska,wysoki,zmniejszenie
+S9,niskie,wysoka,norma,norma
