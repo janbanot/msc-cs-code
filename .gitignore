@@ -3,5 +3,6 @@
 .DS_Store
 .aider*
 .env
+.venv
 
 sem2/JSWAD/misc
