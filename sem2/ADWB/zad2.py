@@ -16,7 +16,7 @@ print(data.dtypes)
 
 data_processed = data.copy().drop(columns=["identyfikator"])
 
-categorical_cols = data_processed.select_dtypes(include=['object']).columns
+categorical_cols = data_processed.select_dtypes(include=["object"]).columns
 
 encoders = {}
 for col in categorical_cols:
@@ -45,12 +45,14 @@ else:
     class_names = y.unique().astype(str).tolist()
     class_names.sort()
 
-plt.figure(figsize=(20,10))
-plot_tree(cart_classifier,
-          filled=True,
-          feature_names=feature_names,
-          class_names=class_names,
-          rounded=True,
-          fontsize=10)
+plt.figure(figsize=(20, 10))
+plot_tree(
+    cart_classifier,
+    filled=True,
+    feature_names=feature_names,
+    class_names=class_names,
+    rounded=True,
+    fontsize=10,
+)
 plt.title("Decision Tree (CART Algorithm)")
 plt.show()

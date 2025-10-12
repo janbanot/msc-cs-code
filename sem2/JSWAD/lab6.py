@@ -8,7 +8,6 @@ from scipy import stats
 from scipy.signal import find_peaks
 import warnings
 import sys
-import io
 from datetime import datetime
 from matplotlib.backends.backend_pdf import PdfPages
 

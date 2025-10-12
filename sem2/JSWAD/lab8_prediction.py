@@ -13,7 +13,6 @@ from sklearn.metrics import (
     accuracy_score,
     classification_report,
 )
-import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping

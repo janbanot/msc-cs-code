@@ -1,5 +1,4 @@
 # JSwAD - Laboratorium 4 - zadanie B - uczenie maszynowe - Jan Banot
-import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score
@@ -33,7 +32,7 @@ y_pred_sex = knn_classifier_sex.predict(X_sex_test)  # Renamed for clarity
 accuracy_sex = accuracy_score(y_sex_test, y_pred_sex)  # Renamed for clarity
 f1_sex = f1_score(y_sex_test, y_pred_sex, average="weighted")  # Renamed for clarity
 
-print(f"KNN Classifier for Penguin Sex (n_neighbors=3):")
+print("KNN Classifier for Penguin Sex (n_neighbors=3):")
 print(f"Accuracy: {accuracy_sex:.4f}")
 print(f"F1-score: {f1_sex:.4f}")
 
