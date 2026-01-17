@@ -9,3 +9,6 @@ sem2/JSWAD/misc
 sem2/JSWAD/data/is-that-santa
 
 sem3/WD/data/covid-compact.csv
+sem3/WD/project/data
+
+__pycache__/

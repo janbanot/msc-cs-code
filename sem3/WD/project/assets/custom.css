@@ -1,0 +1,280 @@
+/* NBA Theme Colors */
+:root {
+    --nba-blue: #17408B;
+    --nba-red: #C9082A;
+    --dark-bg: #1a1a1a;
+    --card-bg: #2C3E50;
+}
+
+/* Dark Mode Overrides */
+body {
+    background-color: var(--dark-bg) !important;
+    color: white !important;
+}
+
+/* Tab Styles */
+.tab {
+    border: 1px solid var(--nba-blue);
+    background-color: var(--card-bg);
+    color: #d0d7de !important;
+    font-weight: 500;
+}
+
+.tab--selected {
+    background-color: var(--nba-blue) !important;
+    color: white !important;
+    border-color: var(--nba-blue);
+}
+
+.tab:hover {
+    background-color: #1e3a6e !important;
+    color: white !important;
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--card-bg) !important;
+    border: 2px solid var(--nba-red) !important;
+    color: white !important;
+}
+
+.card-header {
+    background-color: var(--nba-blue) !important;
+    color: white !important;
+}
+
+.card-body {
+    background-color: var(--card-bg) !important;
+    color: white !important;
+}
+
+/* Table Styles */
+.dash-table-container {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--nba-blue);
+}
+
+.dash-header {
+    background-color: var(--nba-blue) !important;
+    color: white !important;
+}
+
+.dash-cell {
+    background-color: var(--card-bg) !important;
+    color: white !important;
+    border-color: #3a4a5a !important;
+}
+
+/* Graph Backgrounds */
+.js-plotly-plot .plotly .modebar {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+/* Dropdown Styles - Enhanced */
+.Select-control {
+    background-color: var(--card-bg) !important;
+    border-color: var(--nba-blue) !important;
+    color: white !important;
+}
+
+.Select-multi-value-wrapper {
+    color: white !important;
+}
+
+/* Selected value - MAIN FIX */
+.Select-value {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Value label text - Additional selector */
+.Select-value-label {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Placeholder text */
+.Select-placeholder {
+    color: #b0b8c0 !important;
+}
+
+/* Dropdown menu */
+.Select-menu {
+    background-color: var(--card-bg) !important;
+    color: white !important;
+    border: 1px solid var(--nba-blue);
+}
+
+/* Dropdown options */
+.Select-option {
+    background-color: var(--card-bg) !important;
+    color: #e0e0e0 !important;
+    padding: 8px 12px !important;
+}
+
+/* Selected option */
+.Select-option.is-selected {
+    background-color: var(--nba-blue) !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+/* Hovered option */
+.Select-option:hover {
+    background-color: #2a5caa !important;
+    color: white !important;
+}
+
+/* Arrow container */
+.Select-arrow-zone {
+    color: #ffffff !important;
+}
+
+/* Arrow itself */
+.Select-arrow {
+    border-color: #ffffff transparent transparent !important;
+    border-width: 5px !important;
+}
+
+/* Ensure arrow is visible in all states */
+.Select-arrow:hover {
+    border-color: #ffffff transparent transparent !important;
+}
+
+/* Apply Button Styling */
+.btn-primary {
+    background-color: #17408B !important;
+    border-color: #17408B !important;
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #1e4a8f !important;
+    border-color: #1e4a8f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:focus {
+    background-color: #17408B !important;
+    border-color: #17408B !important;
+    box-shadow: 0 0 0 0.2rem rgba(23, 64, 139, 0.5);
+}
+
+.btn-primary:active {
+    background-color: #0f3570 !important;
+    border-color: #0f3570 !important;
+    transform: translateY(0);
+}
+
+/* Button disabled state */
+.btn-primary:disabled {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    cursor: not-allowed;
+}
+
+/* Loading status text */
+.loading-text {
+    color: #6ba1ff !important;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.Select-multi-value-wrapper {
+    color: white !important;
+}
+
+.Select-value {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.Select-placeholder {
+    color: #aaa !important;
+}
+
+.Select-menu {
+    background-color: var(--card-bg) !important;
+    color: white !important;
+    border: 1px solid var(--nba-blue);
+}
+
+.Select-option {
+    background-color: var(--card-bg) !important;
+    color: #e0e0e0 !important;
+}
+
+.Select-option.is-selected {
+    background-color: var(--nba-blue) !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.Select-option:hover {
+    background-color: #2a5caa !important;
+    color: white !important;
+}
+
+.Select-arrow-zone {
+    color: #ffffff !important;
+}
+
+.Select-arrow {
+    border-color: #ffffff transparent transparent !important;
+}
+
+/* Input Styles */
+input {
+    background-color: var(--card-bg) !important;
+    color: white !important;
+    border-color: var(--nba-blue) !important;
+}
+
+/* Label Styles */
+label {
+    color: white !important;
+}
+
+/* Layout Spacing */
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* Text Colors */
+.text-light {
+    color: #f8f9fa !important;
+}
+
+.text-primary {
+    color: #6ba1ff !important;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+    color: white !important;
+}
+
+.card-title {
+    color: white !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tab {
+        font-size: 12px;
+    }
+}
